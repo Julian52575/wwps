@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import re
+import time
 
 from aiohttp import web
 
@@ -39,13 +40,14 @@ def _force_https(body: str) -> str:
     return re.sub(r'"http://([^"]+)"', r'"https://\1"', body)
 
 
-def _clear_notices(body: str) -> str:
+def _freshen(body: str) -> str:
     try:
         payload = json.loads(body)
     except json.JSONDecodeError:
         return body
     if payload.get("lncNotices"):
         payload["lncNotices"] = []
+    payload["currentTime"] = int(time.time() * 1000)
     return json.dumps(payload)
 
 
@@ -59,7 +61,7 @@ async def launching(request: web.Request) -> web.Response:
     body = template.replace(PLACEHOLDER_HOST, base)
     if base.startswith("https://"):
         body = _force_https(body)
-    body = _clear_notices(body)
+    body = _freshen(body)
     metrics.incr("launching_served")
     log.info("served launching info to %s (base %s)",
              request.remote or "?", base)
