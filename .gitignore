@@ -1,8 +1,9 @@
 __pycache__/
 *.pyc
 .venv/
+.env
 
-appsettings.json
+WWR_BACKUP
 
 Resources/*
 !Resources/README.txt
@@ -12,3 +13,5 @@ dataDownload/*
 
 .DS_Store
 .secrets_local
+
+wwps_db_backup*.sql

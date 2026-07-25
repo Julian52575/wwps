@@ -11,6 +11,44 @@ with NHN.
 
 ## Quick start
 
+## Using Docker 
+
+First, `cp .env.example .env`.  
+
+This repository hosts a `docker-compose` to run the project with a single command:  
+``` bash
+docker compose up
+```
+or, if [Just](https://github.com/casey/just) is installed:  
+``` bash
+just up
+```
+
+This simple command starts both WWPS, postgres and traefik. 
+- WWPS is served at `env.SERVER_HOST`. 
+- Postgres is served at `localhost:env.POSTGRES_PORT`
+
+### Nix shell
+
+If you don't want to install docker on your machine, a nix shell is provided with podman and other tools configured. 
+
+Install nix quickly with these commands:  
+``` bash
+curl -L https://install.determinate.systems/nix | sh -s -- install --no-confirm
+. /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
+```
+then open a new terminal. 
+You can enter the shell with:  
+``` bash
+nix-shell
+```
+or run the whole project with: 
+``` bash
+nix-shell --run just up
+```
+
+## Locally 
+
 ```bash
 pip install -r requirements.txt
 psql "$DATABASE_URL" -f Database/schema.sql
@@ -64,7 +102,38 @@ Resources/       game data (you supply this)
 dataDownload/    static files served to the client
 Tools/           data-download helper scripts from the C# repo
 docs/            documentation
+
+.env.example     an example .env
+docker_entrypoint.sh    the entrypoint for the wwps server's docker image
+docker-compose.yml      compose for both wwps, postgres and traefik 
+justfile                helper commands for easy development (try just help)
+shell.nix               the nix shell to start a virtual environment with podman configured 
 ```
+
+## Useful commands
+
+If [Just](https://github.com/casey/just) is installed, you can use these command to GREATLY ease development :   
+
+| command | purpose |
+| ------- | ------- |
+| `up` | start the docker compose |
+| `down` | stop the docker compose |
+| `rm` | stop the docker compose and delete the game server container and image |
+| `nuke` | delete the containers, images and volumes |
+| `exec CMD` | run the `$CMD` inside the game server container |
+| `attach` | attach the terminal to the game server container |
+| `log` | print the game server logs |
+| `database-dump` | dump the whole database into a .sql file |
+| `database-pipe DATABASE_FILE` | cat `$DATABASE_FILE` into the database |
+
+Example: 
+``` bash
+[nix-shell:Julian]$ just exec ls
+podman exec -it ${BASENAME}_wwps_1 ls
+Database  Resources  appsettings.json  dataDownload  requirements-dev.txt  requirements.txt  wwps
+```
+
+All of these are defined within `justfile`.  
 
 ## Credits
 
