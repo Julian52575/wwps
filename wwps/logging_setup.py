@@ -74,7 +74,7 @@ def configure(level: str = "INFO"):
     root.addHandler(handler)
     root.setLevel(getattr(logging, level.upper(), logging.INFO))
 
-    logging.getLogger("aiohttp.access").setLevel(logging.WARNING)
+    logging.getLogger("aiohttp.access").setLevel(logging.INFO)
 
 
 def get(name: str) -> logging.Logger:

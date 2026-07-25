@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import re
 
 from aiohttp import web
 
@@ -34,6 +35,10 @@ def _public_base(request: web.Request) -> str:
     return str(request.url.origin()).rstrip("/")
 
 
+def _force_https(body: str) -> str:
+    return re.sub(r'"http://([^"]+)"', r'"https://\1"', body)
+
+
 async def launching(request: web.Request) -> web.Response:
     template = _load_template()
     if template is None:
@@ -42,6 +47,8 @@ async def launching(request: web.Request) -> web.Response:
                                   "loginable": "N", "playable": "N"}, status=200)
     base = _public_base(request)
     body = template.replace(PLACEHOLDER_HOST, base)
+    if base.startswith("https://"):
+        body = _force_https(body)
     metrics.incr("launching_served")
     log.info("served launching info to %s (base %s)",
              request.remote or "?", base)
