@@ -39,6 +39,26 @@ def _force_https(body: str) -> str:
     return re.sub(r'"http://([^"]+)"', r'"https://\1"', body)
 
 
+def _ensure_device_idps(body: str, base: str) -> str:
+    try:
+        payload = json.loads(body)
+    except json.JSONDecodeError:
+        return body
+    idp = payload.get("idpInfo")
+    if not isinstance(idp, dict):
+        return body
+    for name in ("toast", "guest"):
+        if name not in idp:
+            idp[name] = {
+                "selected": "Y",
+                "loginable": "Y",
+                "consumerKey": "DUMMY_KEY",
+                "consumerSecret": "DUMMY_SECRET",
+                "redirectionUrl": base,
+            }
+    return json.dumps(payload)
+
+
 async def launching(request: web.Request) -> web.Response:
     template = _load_template()
     if template is None:
@@ -49,6 +69,7 @@ async def launching(request: web.Request) -> web.Response:
     body = template.replace(PLACEHOLDER_HOST, base)
     if base.startswith("https://"):
         body = _force_https(body)
+    body = _ensure_device_idps(body, base)
     metrics.incr("launching_served")
     log.info("served launching info to %s (base %s)",
              request.remote or "?", base)
