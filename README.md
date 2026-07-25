@@ -110,6 +110,31 @@ justfile                helper commands for easy development (try just help)
 shell.nix               the nix shell to start a virtual environment with podman configured 
 ```
 
+## Useful commands
+
+If [Just](https://github.com/casey/just) is installed, you can use these command to GREATLY ease development :   
+
+| command | purpose |
+| ------- | ------- |
+| `up` | start the docker compose |
+| `down` | stop the docker compose |
+| `rm` | stop the docker compose and delete the game server container and image |
+| `nuke` | delete the containers, images and volumes |
+| `exec CMD` | run the `$CMD` inside the game server container |
+| `attach` | attach the terminal to the game server container |
+| `log` | print the game server logs |
+| `database-dump` | dump the whole database into a .sql file |
+| `database-pipe DATABASE_FILE` | cat `$DATABASE_FILE` into the database |
+
+Example: 
+``` bash
+[nix-shell:Julian]$ just exec ls
+podman exec -it ${BASENAME}_wwps_1 ls
+Database  Resources  appsettings.json  dataDownload  requirements-dev.txt  requirements.txt  wwps
+```
+
+All of these are defined within `justfile`.  
+
 ## Credits
 
 Original C# server: Zura, DarkCraft, wibwob_yt, with reverse engineering help
