@@ -45,7 +45,7 @@ attach:
 
 log:
     echo "Warning: using ctrl-c will stop the container. Kill the terminal instead."
-    {{CONTAINER_TOOL}} container attach {{CONTAINER_NAME}}
+    {{CONTAINER_TOOL}} container logs {{CONTAINER_NAME}}
 
 DATABASE_DUMP_FILE := "wwps_db_backup_$(date +%Y%m%d_%H%M%S).sql"
 database-dump:
