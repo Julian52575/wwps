@@ -15,7 +15,6 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir --root-user-action ignore -r requirements.txt
 RUN pip install --no-cache-dir --root-user-action ignore -r requirements-dev.txt
 
-COPY appsettings.example.json .
 COPY wwps/ ./wwps/
 COPY Resources/ ./Resources/
 COPY dataDownload/ ./dataDownload/
