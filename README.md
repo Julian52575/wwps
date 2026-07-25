@@ -11,7 +11,7 @@ with NHN.
 
 ## Quick start
 
-## Using Docker 
+### Using Docker 
 
 First, `cp .env.example .env`.  
 
@@ -28,7 +28,7 @@ This simple command starts both WWPS, postgres and traefik.
 - WWPS is served at `env.SERVER_HOST`. 
 - Postgres is served at `localhost:env.POSTGRES_PORT`
 
-### Nix shell
+#### Nix shell
 
 If you don't want to install docker on your machine, a nix shell is provided with podman and other tools configured. 
 
@@ -47,7 +47,7 @@ or run the whole project with:
 nix-shell --run just up
 ```
 
-## Locally 
+### Locally 
 
 ```bash
 pip install -r requirements.txt
