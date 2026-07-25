@@ -3,8 +3,6 @@
 # No point in running it manually
 set -e
 
-cp appsettings.example.json appsettings.json
-
 # Remplace the sensitive information of .env into the appsettings
 python - <<'EOF'
 import json
