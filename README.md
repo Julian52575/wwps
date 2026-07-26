@@ -125,6 +125,7 @@ If [Just](https://github.com/casey/just) is installed, you can use these command
 | `log` | print the game server logs |
 | `database-dump` | dump the whole database into a .sql file |
 | `database-pipe DATABASE_FILE` | cat `$DATABASE_FILE` into the database |
+| `mkcert` | generate the certificates and configuration to expose the game server at env.SERVER_HOST as https |
 
 Example: 
 ``` bash
