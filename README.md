@@ -15,18 +15,20 @@ with NHN.
 
 First, `cp .env.example .env`.  
 
-This repository hosts a `docker-compose` to run the project with a single command:  
+This repository hosts a `docker-compose` to run the project with 2 commands:  
 ``` bash
+just mkcert
 docker compose up
 ```
-or, if [Just](https://github.com/casey/just) is installed:  
+or, using [Just](https://github.com/casey/just):  
 ``` bash
+just mkcert
 just up
 ```
 
 This simple command starts both WWPS, postgres and traefik. 
-- WWPS is served at `env.SERVER_HOST`. 
-- Postgres is served at `localhost:env.POSTGRES_PORT`
+- WWPS is served at `env.SERVER_HOST` using HTTPS certificates generated with `just mkcert`. 
+- Postgres is served at `localhost:POSTGRES_PORT`
 
 #### Nix shell
 
