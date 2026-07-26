@@ -15,14 +15,16 @@ with NHN.
 
 First, `cp .env.example .env`.  
 
-This repository hosts a `docker-compose` to run the project with 2 commands:  
+This repository hosts a `docker-compose` to run the project with 3 commands:  
 ``` bash
 just mkcert
+export DOCKER_SOCKET=/var/run/docker.sock
 docker compose up
 ```
 or, using [Just](https://github.com/casey/just):  
 ``` bash
 just mkcert
+export DOCKER_SOCKET=/var/run/docker.sock
 just up
 ```
 
@@ -32,7 +34,7 @@ This simple command starts both WWPS, postgres and traefik.
 
 #### Nix shell
 
-If you don't want to install docker on your machine, a nix shell is provided with podman and other tools configured. 
+If you don't want to install docker on your machine, a nix shell is provided with podman, just and other tools configured. 
 
 Install nix quickly with these commands:  
 ``` bash
@@ -44,10 +46,7 @@ You can enter the shell with:
 ``` bash
 nix-shell
 ```
-or run the whole project with: 
-``` bash
-nix-shell --run just up
-```
+And EVERYGHING you need for development will be available until you `exit` the shell.   
 
 ### Locally 
 
