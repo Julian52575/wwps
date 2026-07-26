@@ -48,7 +48,7 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.wwps.rule=Host(`${SERVER_HOST}`)"
       - "traefik.http.routers.wwps.entrypoints=web"
-      - "traefik.http.services.wwps.loadbalancer.server.port=${WWPS__PORT}"
+      - "traefik.http.services.wwps.loadbalancer.server.port=${WWPS_PORT}"
     depends_on:
       postgres:
         condition: service_healthy
