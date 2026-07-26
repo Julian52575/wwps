@@ -1,7 +1,9 @@
 services:
   
   traefik:
-    image: traefik:v3.7.8
+    build:
+      dockerfile: docker/traefik.Dockerfile
+      context: .
     command:
       - "--providers.docker=true"
       - "--providers.docker.endpoint=unix:///var/run/docker.sock"
@@ -9,12 +11,22 @@ services:
       - "--providers.file.filename=/certificates/dynamic.yml"
       - "--entrypoints.web.address=:5555"
       - "--entrypoints.websecure.address=:443"
+      # For healthcheck
+      - --ping=true
+      - --ping.entrypoint=traefik
+      - --entrypoints.traefik.address=:8082
     volumes:
       - "${DOCKER_SOCKET}:/var/run/docker.sock:ro"
       - "./certificates:/certificates:ro"
     ports:
       - "80:5555"
       - "443:443"
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://127.0.0.1:8082/ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
 
   postgres:
     image: postgres:17
@@ -36,7 +48,7 @@ services:
   wwps:
     build:
       context: .
-      target: wwps
+      dockerfile: docker/wwps.Dockerfile
     env_file: .env
     labels:
       - "traefik.enable=true"
@@ -45,10 +57,10 @@ services:
       - "traefik.http.routers.wwps.entrypoints=websecure"
       - "traefik.http.routers.wwps.tls=true"
     depends_on:
-      postgres:
-        condition: service_healthy
       traefik:
         condition: service_healthy
+      postgres:
+          condition: service_healthy
   #wwps-tests:
   #  build:
   #    context: .

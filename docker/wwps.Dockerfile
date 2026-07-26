@@ -23,7 +23,7 @@ COPY Database/ ./Database/
 
 EXPOSE 8080
 
-COPY docker_entrypoint.sh /entrypoint.sh
+COPY docker/docker_entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
 ENTRYPOINT ["/entrypoint.sh"]

@@ -24,7 +24,6 @@ docker compose up
 or, using [Just](https://github.com/casey/just):  
 ``` bash
 just mkcert
-export DOCKER_SOCKET=/var/run/docker.sock
 just up
 ```
 

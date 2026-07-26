@@ -11,14 +11,15 @@ help:
     echo "Using {{CONTAINER_TOOL}}, container is {{CONTAINER_NAME}} and built from image {{IMAGE_NAME}}"
 
 up:
-    {{CONTAINER_TOOL}} compose up --build
+    # set Docker_Socket if not set yet
+    DOCKER_SOCKET=${DOCKER_SOCKET:-/var/run/docker.sock} {{CONTAINER_TOOL}} compose up --build
 
 down:
-    {{CONTAINER_TOOL}} compose down
+    DOCKER_SOCKET=${DOCKER_SOCKET:-/var/run/docker.sock} {{CONTAINER_TOOL}} compose down
 
 rm:
     just down || true
-    {{CONTAINER_TOOL}} rm {{CONTAINER_NAME}} || {{CONTAINER_TOOL}} image rm {{IMAGE_NAME}}
+    DOCKER_SOCKET=${DOCKER_SOCKET:-/var/run/docker.sock} {{CONTAINER_TOOL}} rm {{CONTAINER_NAME}} || {{CONTAINER_TOOL}} image rm {{IMAGE_NAME}}
 
 nuke:
     @echo "⚠️  This will delete containers, images, and volumes!"
@@ -28,14 +29,14 @@ nuke:
         echo "Aborted."; \
         exit 1; \
     fi
-    just database-dump
+    just database-dump || true
     if [ "{{CONTAINER_TOOL}}" = "docker" ]; then \
-        docker compose down --volumes --rmi all --remove-orphans; \
+        DOCKER_SOCKET=${DOCKER_SOCKET:-/var/run/docker.sock} docker compose down --volumes --rmi all --remove-orphans; \
     else \
-        podman compose down --volumes --remove-orphans; \
-        podman image prune -a -f; \
+        DOCKER_SOCKET=${DOCKER_SOCKET:-/var/run/docker.sock} podman compose down --volumes --remove-orphans; \
+        DOCKER_SOCKET=${DOCKER_SOCKET:-/var/run/docker.sock} podman image prune -a -f; \
     fi
-    echo "☢️ Nuke successful' 
+    echo "☢️ Nuke successful"
 
 exec CMD:
     {{CONTAINER_TOOL}} exec -it {{CONTAINER_NAME}} {{CMD}}
