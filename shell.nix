@@ -12,6 +12,7 @@ pkgs.mkShellNoCC {
     inotify-tools
     podman
     podman-compose
+    mkcert
     # podman dependencies
     fuse-overlayfs
   ];

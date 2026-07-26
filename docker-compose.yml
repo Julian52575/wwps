@@ -6,21 +6,15 @@ services:
       - "--providers.docker=true"
       - "--providers.docker.endpoint=unix:///var/run/docker.sock"
       - "--providers.docker.exposedbydefault=false"
+      - "--providers.file.filename=/certificates/dynamic.yml"
       - "--entrypoints.web.address=:5555"
+      - "--entrypoints.websecure.address=:443"
     volumes:
       - "${DOCKER_SOCKET}:/var/run/docker.sock:ro"
+      - "./certificates:/certificates:ro"
     ports:
       - "80:5555"
-      - "8080:8080"
-    healthcheck:
-      test:
-        [
-          "CMD-SHELL",
-          "test -S /var/run/docker.sock && wget -qO- --header='Host: d' http://localhost:8080/ping >/dev/null 2>&1",
-        ]
-      interval: 10s
-      timeout: 5s
-      retries: 3
+      - "443:443"
 
   postgres:
     image: postgres:17
@@ -47,8 +41,9 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.wwps.rule=Host(`${SERVER_HOST}`)"
-      - "traefik.http.routers.wwps.entrypoints=web"
       - "traefik.http.services.wwps.loadbalancer.server.port=${WWPS_PORT}"
+      - "traefik.http.routers.wwps.entrypoints=websecure"
+      - "traefik.http.routers.wwps.tls=true"
     depends_on:
       postgres:
         condition: service_healthy

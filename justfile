@@ -53,3 +53,16 @@ database-dump:
     echo Dumped database into {{DATABASE_DUMP_FILE}}
 database-pipe DATABASE_FILE:
     cat {{DATABASE_FILE}} | {{CONTAINER_TOOL}} compose exec -T postgres psql -U postgres -d puniemu
+
+# Removes previous ceriticates and updates Traefik's dynamic.yml to match env.${SERVER_HOST}
+mkcert:
+    rm -rf *.pem certificates/*.pem || true
+    mkcert ${SERVER_HOST}
+    cp *.pem certificates/
+    @printf '%s\n' \
+      'tls:' \
+      '  certificates:' \
+      "    - certFile: /certificates/${SERVER_HOST}.pem" \
+      "      keyFile: /certificates/${SERVER_HOST}-key.pem" \
+      > certificates/dynamic.yml
+    cat -e certificates/dynamic.yml

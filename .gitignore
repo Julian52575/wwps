@@ -15,3 +15,7 @@ dataDownload/*
 .secrets_local
 
 wwps_db_backup*.sql
+
+# Https traefik certificates
+*.pem
+dynamic.yml
