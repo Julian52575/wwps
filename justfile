@@ -21,6 +21,14 @@ rm:
     just down || true
     DOCKER_SOCKET=${DOCKER_SOCKET:-/var/run/docker.sock} {{CONTAINER_TOOL}} rm {{CONTAINER_NAME}} || {{CONTAINER_TOOL}} image rm {{IMAGE_NAME}}
 
+test:
+    #!/usr/bin/env bash
+    if [ "{{CONTAINER_TOOL}}" = "podman" ]; then \
+        DOCKER_SOCKET=${DOCKER_SOCKET:-/var/run/docker.sock} {{CONTAINER_TOOL}} compose --profile test run --rm wwps-tests; \
+    else \
+        DOCKER_SOCKET=${DOCKER_SOCKET:-/var/run/docker.sock} {{CONTAINER_TOOL}} compose run --rm wwps-tests; \
+    fi
+
 nuke:
     @echo "⚠️  This will delete containers, images, and volumes!"
     read -p "Type 'yes' to continue: " confirm && \

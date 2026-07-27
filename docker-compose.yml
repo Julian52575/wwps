@@ -45,6 +45,15 @@ services:
       timeout: 5s
       retries: 5
 
+  wwps-tests:
+    profiles:
+      - test
+    build:
+      context: .
+      dockerfile: docker/wwps-tests.Dockerfile
+    depends_on:
+      postgres:
+        condition: service_healthy
   wwps:
     build:
       context: .
@@ -60,14 +69,7 @@ services:
       traefik:
         condition: service_healthy
       postgres:
-          condition: service_healthy
-  #wwps-tests:
-  #  build:
-  #    context: .
-  #    target: test
-  #  depends_on:
-  #    postgres:
-  #      condition: service_healthy
+        condition: service_healthy
 
 
 volumes:
