@@ -20,6 +20,7 @@ COPY wwps/ ./wwps/
 COPY Resources/ ./Resources/
 COPY dataDownload/ ./dataDownload/
 COPY Database/ ./Database/
+COPY Tools/ ./Tools/
 
 EXPOSE 8080
 
