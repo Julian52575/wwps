@@ -121,6 +121,7 @@ If [Just](https://github.com/casey/just) is installed, you can use these command
 | `up` | start the docker compose |
 | `down` | stop the docker compose |
 | `rm` | stop the docker compose and delete the game server container and image |
+| `test` | run the wwps pytests suite |
 | `nuke` | delete the containers, images and volumes |
 | `exec CMD` | run the `$CMD` inside the game server container |
 | `attach` | attach the terminal to the game server container |
@@ -128,6 +129,7 @@ If [Just](https://github.com/casey/just) is installed, you can use these command
 | `database-dump` | dump the whole database into a .sql file |
 | `database-pipe DATABASE_FILE` | cat `$DATABASE_FILE` into the database |
 | `mkcert` | generate the certificates and configuration to expose the game server at env.SERVER_HOST as https |
+| `import-resources` | copy the resources from `$RESSOURCE_PATH` into the server's folders |
 
 Example: 
 ``` bash

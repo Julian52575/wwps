@@ -10,17 +10,21 @@ help:
     just --list
     echo "Using {{CONTAINER_TOOL}}, container is {{CONTAINER_NAME}} and built from image {{IMAGE_NAME}}"
 
+# start the docker compose
 up:
     # set Docker_Socket if not set yet
     DOCKER_SOCKET=${DOCKER_SOCKET:-/var/run/docker.sock} {{CONTAINER_TOOL}} compose up --build
 
+# stop the docker compose
 down:
     DOCKER_SOCKET=${DOCKER_SOCKET:-/var/run/docker.sock} {{CONTAINER_TOOL}} compose down
 
+# stop the docker compose and delete the game server container and image
 rm:
     just down || true
     DOCKER_SOCKET=${DOCKER_SOCKET:-/var/run/docker.sock} {{CONTAINER_TOOL}} rm {{CONTAINER_NAME}} || {{CONTAINER_TOOL}} image rm {{IMAGE_NAME}}
 
+# run the wwps pytests suite
 test:
     #!/usr/bin/env bash
     if [ "{{CONTAINER_TOOL}}" = "podman" ]; then \
@@ -29,6 +33,7 @@ test:
         DOCKER_SOCKET=${DOCKER_SOCKET:-/var/run/docker.sock} {{CONTAINER_TOOL}} compose run --rm wwps-tests; \
     fi
 
+# delete the containers, images and volumes
 nuke:
     @echo "⚠️  This will delete containers, images, and volumes!"
     read -p "Type 'yes' to continue: " confirm && \
@@ -46,24 +51,30 @@ nuke:
     fi
     echo "☢️ Nuke successful"
 
+# run the `$CMD` inside the game server container
 exec CMD:
     {{CONTAINER_TOOL}} exec -it {{CONTAINER_NAME}} {{CMD}}
 
+# attach the terminal to the game server container
 attach:
     {{CONTAINER_TOOL}} container attach {{CONTAINER_NAME}}
 
+# print the game server logs
 log:
     echo "Warning: using ctrl-c will stop the container. Kill the terminal instead."
     {{CONTAINER_TOOL}} container logs {{CONTAINER_NAME}}
 
 DATABASE_DUMP_FILE := "wwps_db_backup_$(date +%Y%m%d_%H%M%S).sql"
+# dump the whole database into a .sql file
 database-dump:
     {{CONTAINER_TOOL}} exec "{{BASENAME}}_postgres_1" pg_dumpall -U ${POSTGRES_USER} > {{DATABASE_DUMP_FILE}}
     echo Dumped database into {{DATABASE_DUMP_FILE}}
+
+# cat `$DATABASE_FILE` into the database
 database-pipe DATABASE_FILE:
     cat {{DATABASE_FILE}} | {{CONTAINER_TOOL}} compose exec -T postgres psql -U postgres -d puniemu
 
-# Removes previous ceriticates and updates Traefik's dynamic.yml to match env.${SERVER_HOST}
+# generate the certificates and configuration to expose the game server at env.SERVER_HOST as https
 mkcert:
     rm -rf *.pem certificates/*.pem || true
     mkcert ${SERVER_HOST}
@@ -76,6 +87,7 @@ mkcert:
       > certificates/dynamic.yml
     cat -e certificates/dynamic.yml
 
+# copy the resources from `$RESSOURCE_PATH` into the server's folders
 import-resources:
     #!/usr/bin/env bash
     set -euo pipefail
