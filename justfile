@@ -75,3 +75,23 @@ mkcert:
       "      keyFile: /certificates/${SERVER_HOST}-key.pem" \
       > certificates/dynamic.yml
     cat -e certificates/dynamic.yml
+
+import-resources:
+    #!/usr/bin/env bash
+    set -euo pipefail
+
+    if [[ ! -d "${RESSOURCE_PATH:-}" ]]; then
+        echo "Error: RESSOURCE_PATH '${RESSOURCE_PATH}' must point to an existing folder"
+        exit 1
+    fi
+    if [[ ! -d "${RESSOURCE_PATH}/Resources" ]]; then
+        echo "Error: missing ${RESSOURCE_PATH}/Resources folder"
+        exit 1
+    fi
+    if [[ ! -d "${RESSOURCE_PATH}/dataDownload" ]]; then
+        echo "Error: missing ${RESSOURCE_PATH}/dataDownload folder"
+        exit 1
+    fi
+    cp "${RESSOURCE_PATH}/Resources/"* Resources/
+    cp "${RESSOURCE_PATH}/dataDownload/"* dataDownload/
+    echo "You can import ${RESSOURCE_PATH}/backup_nomail.sql using 'just database-pipe ${RESSOURCE_PATH}/backup_nomail.sql'"
