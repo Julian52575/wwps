@@ -103,8 +103,10 @@ dataDownload/    static files served to the client
 Tools/           data-download helper scripts from the C# repo
 docs/            documentation
 
+certificates/    traefik certificates folder. use just mkcert to fill it automatically
+docker/          dockerfile and entrypoint
+
 .env.example     an example .env
-docker_entrypoint.sh    the entrypoint for the wwps server's docker image
 docker-compose.yml      compose for both wwps, postgres and traefik 
 justfile                helper commands for easy development (try just help)
 shell.nix               the nix shell to start a virtual environment with podman configured 
